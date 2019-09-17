@@ -13,12 +13,17 @@ class Crud5Controller extends Controller
         $request->session()->put('gender', $request->has('gender') ? $request->get('gender') : ($request->session()->has('gender') ? $request->session()->get('gender') : -1));
         $request->session()->put('field', $request->has('field') ? $request->get('field') : ($request->session()->has('field') ? $request->session()->get('field') : 'created_at'));
         $request->session()->put('sort', $request->has('sort') ? $request->get('sort') : ($request->session()->has('sort') ? $request->session()->get('sort') : 'desc'));
+
         $customers = new Customer();
-        if ($request->session()->get('gender') != -1)
+
+        if ($request->session()->get('gender') != -1) {
             $customers = $customers->where('gender', $request->session()->get('gender'));
+        }
+
         $customers = $customers->where('name', 'like', '%' . $request->session()->get('search') . '%')
             ->orderBy($request->session()->get('field'), $request->session()->get('sort'))
             ->paginate(5);
+
         if ($request->ajax())
             return view('crud_5.index', compact('customers'));
         else
